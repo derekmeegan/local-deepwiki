@@ -6,9 +6,9 @@ The system is three loosely-coupled parts sharing one contract: the **`.deepwiki
 
 Everything meaningful is a file:
 
-- `wiki.json` — the manifest (`WikiManifest` in `src/types.ts:60`). A tree of pages, each with `id`, `title`, `file`, and optionally `sources` (repo files/dirs the page documents) and `sourcesHash` (content hash of those sources at write time).
+- `wiki.json` — the manifest (`WikiManifest` in `src/types.ts:57`). A tree of pages, each with `id`, `title`, `file`, optional `children` (nested section pages), and optionally `sources` (repo files/dirs the page documents) and `sourcesHash` (content hash of those sources at write time). A wiki-level `depth` field records the authoring register (standard or deep).
 - `*.md` — pages: plain, terminal-friendly markdown.
-- `analysis.json` — the AST scan output (`Analysis` in `src/types.ts:27`). Machine-written, gitignored, regenerated at will.
+- `analysis.json` — the AST scan output (`Analysis` in `src/types.ts:29`). Machine-written, gitignored, regenerated at will.
 
 Because the contract is files, the three parts never talk to each other directly:
 
