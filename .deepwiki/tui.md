@@ -12,7 +12,7 @@ A dependency-free ANSI TUI:
 
 ## Markdown → ANSI
 
-`renderMarkdown` (`src/tui/tui.ts:27`) is a small renderer, not a full CommonMark implementation: colored/underlined headings, word-wrapped prose, bullets and numbered lists, blockquotes, inline bold/italic/code/links, and boxed code fences. Fenced diagram blocks (ASCII or mermaid source) display as-is inside the box — which is why the skill tells agents to prefer compact ASCII diagrams.
+`renderMarkdown` (`src/tui/tui.ts:27`) is a small renderer, not a full CommonMark implementation: colored/underlined headings, word-wrapped prose, bullets and numbered lists, blockquotes, inline bold/italic/code/links, boxed code fences, and **real table rendering** — pipe rows are buffered and drawn as box-character grids with per-column widths, bold headers, and ANSI-aware cell clipping (`clip`/`flushTable` inside `renderMarkdown`). Inline styling applies links before bold/italic/code, since a naive `[..](..)` match after ANSI insertion can consume the `[` of an escape sequence. Fenced diagram blocks (ASCII or mermaid source) display as-is inside the box — which is why the skill tells agents to prefer compact ASCII diagrams.
 
 ## Non-interactive fallback
 

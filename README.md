@@ -8,7 +8,11 @@ local-deepwiki generates and maintains a DeepWiki-style knowledge base for a rep
 
 The wiki itself is plain markdown in a `.deepwiki/` directory — versioned, reviewable in pull requests, and readable without any server.
 
-<!-- screenshot: `deepwiki tui` browsing a generated wiki -->
+<p align="center">
+  <img src="media/tui-stagehand.png" alt="deepwiki tui browsing a generated wiki for the Stagehand repository" width="820">
+  <br>
+  <em>`deepwiki tui` browsing an agent-generated wiki for <a href="https://github.com/browserbase/stagehand">Stagehand</a></em>
+</p>
 
 ```console
 $ deepwiki status

@@ -31,11 +31,13 @@ export function renderMarkdown(md: string, width: number): string[] {
   let inCode = false;
   let codeLang = '';
 
+  // Links first — once ANSI escapes are inserted, a naive [..](..) match can
+  // start at the "[" inside an escape sequence and eat it.
   const inline = (s: string): string => s
+    .replace(/\[([^\]\x1b]+)\]\(([^)\x1b]+)\)/g, `${style.underline}$1${style.reset}${style.dim} ($2)${style.reset}`)
     .replace(/\*\*([^*]+)\*\*/g, `${style.bold}$1${style.reset}`)
-    .replace(/(?<![\w`])_([^_]+)_(?![\w`])/g, `${style.italic}$1${style.reset}`)
-    .replace(/`([^`]+)`/g, `${style.cyan}$1${style.reset}`)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, `${style.underline}$1${style.reset}${style.dim} ($2)${style.reset}`);
+    .replace(/(?<![\w`])_([^_\x1b]+)_(?![\w`])/g, `${style.italic}$1${style.reset}`)
+    .replace(/`([^`\x1b]+)`/g, `${style.cyan}$1${style.reset}`);
 
   const wrap = (s: string, indent = 0): string[] => {
     const pad = ' '.repeat(indent);
@@ -56,7 +58,62 @@ export function renderMarkdown(md: string, width: number): string[] {
     return res.length ? res : [''];
   };
 
+  // eslint-disable-next-line no-control-regex
+  const visibleLen = (t: string) => t.replace(/\x1b\[[0-9;]*m/g, '').length;
+  const clip = (t: string, max: number) => {
+    if (visibleLen(t) <= max) return t;
+    let outStr = '';
+    let n = 0;
+    for (let i = 0; i < t.length && n < max - 1; i++) {
+      if (t[i] === '\x1b') {
+        const m = t.slice(i).match(/^\x1b\[[0-9;]*m/);
+        if (m) { outStr += m[0]; i += m[0].length - 1; continue; }
+      }
+      outStr += t[i];
+      n++;
+    }
+    return outStr + style.reset + '…';
+  };
+
+  const tableBuf: string[] = [];
+  const flushTable = () => {
+    if (!tableBuf.length) return;
+    const rows = tableBuf
+      .filter((r) => !/^\|?[\s\-:|]+\|?$/.test(r)) // drop separator rows
+      .map((r) => r.replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => inline(c.trim())));
+    tableBuf.length = 0;
+    if (!rows.length) return;
+    const cols = Math.max(...rows.map((r) => r.length));
+    const widths = Array.from({ length: cols }, (_, i) =>
+      Math.max(...rows.map((r) => visibleLen(r[i] ?? ''))));
+    // shrink widest columns until the table fits
+    const overhead = cols * 3 + 1;
+    let total = widths.reduce((a, b) => a + b, 0) + overhead;
+    while (total > width && Math.max(...widths) > 8) {
+      const iMax = widths.indexOf(Math.max(...widths));
+      widths[iMax]--;
+      total--;
+    }
+    const line = (l: string, m: string, r: string) =>
+      `${style.dim}${l}${widths.map((w) => '─'.repeat(w + 2)).join(m)}${r}${style.reset}`;
+    out.push(line('┌', '┬', '┐'));
+    rows.forEach((r, ri) => {
+      const cells = widths.map((w, i) => {
+        const cell = clip(r[i] ?? '', w);
+        return ` ${ri === 0 ? style.bold : ''}${cell}${style.reset}${' '.repeat(Math.max(0, w - visibleLen(clip(r[i] ?? '', w))))} `;
+      });
+      out.push(`${style.dim}│${style.reset}${cells.join(`${style.dim}│${style.reset}`)}${style.dim}│${style.reset}`);
+      if (ri === 0 && rows.length > 1) out.push(line('├', '┼', '┤'));
+    });
+    out.push(line('└', '┴', '┘'));
+  };
+
   for (const raw of lines) {
+    if (!inCode && raw.trimStart().startsWith('|')) {
+      tableBuf.push(raw.trim());
+      continue;
+    }
+    flushTable();
     if (raw.trimStart().startsWith('```')) {
       if (!inCode) {
         codeLang = raw.trim().slice(3).trim();
@@ -105,10 +162,6 @@ export function renderMarkdown(md: string, width: number): string[] {
       out.push(...wrap(`${style.dim}▌ ${inline(raw.replace(/^>\s?/, ''))}${style.reset}`, 0));
       continue;
     }
-    if (raw.startsWith('|')) {
-      out.push(`${style.dim}${raw.slice(0, width)}${style.reset}`);
-      continue;
-    }
     if (raw.trim() === '---' || raw.trim() === '***') {
       out.push(`${style.dim}${'─'.repeat(width)}${style.reset}`);
       continue;
@@ -116,6 +169,7 @@ export function renderMarkdown(md: string, width: number): string[] {
     if (!raw.trim()) { out.push(''); continue; }
     out.push(...wrap(inline(raw)));
   }
+  flushTable();
   return out;
 }
 
