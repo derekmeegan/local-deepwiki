@@ -1,0 +1,63 @@
+{
+  "name": "local-deepwiki",
+  "description": "AST-powered deepwiki, written by your own coding agent",
+  "generator": "local-deepwiki@0.1.0",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "file": "overview.md",
+      "summary": "What local-deepwiki is, quick start, and where things live.",
+      "sources": [
+        "package.json",
+        "src/cli.ts",
+        "skill/SKILL.md"
+      ],
+      "sourcesHash": "ac2e9eace66e0a7242e1b4d7767ce7933f6127b152cbfa83c8dd7010bb278718"
+    },
+    {
+      "id": "architecture",
+      "title": "Architecture",
+      "file": "architecture.md",
+      "summary": "The .deepwiki/ file contract and the staleness model.",
+      "sources": [
+        "src/types.ts",
+        "src/wiki.ts",
+        "src/scan/walk.ts"
+      ],
+      "sourcesHash": "c1be4efbb19f3cf75eaa7452fc5a53311aab6dbaf465c7fe4676043f3fb39b75"
+    },
+    {
+      "id": "scanner",
+      "title": "Scanner",
+      "file": "scanner.md",
+      "summary": "Tree-sitter AST extraction pipeline and the import graph.",
+      "sources": [
+        "src/scan"
+      ],
+      "sourcesHash": "f49aef833ebfcc16b3ff1e9d6c04be94b7d7a0591785d8941736a3c98433575a"
+    },
+    {
+      "id": "tui",
+      "title": "Terminal Viewer",
+      "file": "tui.md",
+      "summary": "The dependency-free ANSI terminal browser.",
+      "sources": [
+        "src/tui"
+      ],
+      "sourcesHash": "05d14e9ccaa594cae4a68859b2d89d9e9e2a60e8eb5308d6d396b6d5fc2c04ca"
+    },
+    {
+      "id": "skill",
+      "title": "The Skill",
+      "file": "skill.md",
+      "summary": "The agent playbook: generate, update, answer.",
+      "sources": [
+        "skill/SKILL.md",
+        "src/init.ts"
+      ],
+      "sourcesHash": "e39f70785e6dacb1dd6787e92b99275ccc3d8e9416a483ab065e332411d7c8b9"
+    }
+  ],
+  "generatedAt": "2026-08-12T04:57:58.472Z"
+}

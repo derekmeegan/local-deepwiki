@@ -1,0 +1,51 @@
+{
+  "name": "local-deepwiki",
+  "version": "0.1.0",
+  "description": "AST-powered deepwiki for your codebase, written by your own coding agent and browsed in your terminal. No LLM API calls \u2014 a skill, a scanner, and a TUI.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "deepwiki": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skill",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/cli.js",
+    "dev": "tsc -p tsconfig.json --watch",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@vscode/tree-sitter-wasm": "^0.3.1",
+    "commander": "^12.1.0",
+    "web-tree-sitter": "^0.26.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "keywords": [
+    "deepwiki",
+    "documentation",
+    "wiki",
+    "tree-sitter",
+    "ast",
+    "agent-skill",
+    "claude-code"
+  ],
+  "packageManager": "pnpm@11.5.3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derekmeegan/local-deepwiki.git"
+  },
+  "homepage": "https://github.com/derekmeegan/local-deepwiki#readme",
+  "bugs": {
+    "url": "https://github.com/derekmeegan/local-deepwiki/issues"
+  },
+  "author": "Derek Meegan"
+}
