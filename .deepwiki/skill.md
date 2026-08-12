@@ -24,6 +24,8 @@ Three workflows:
 2. **Update** — `deepwiki status --json` is the work list; only stale pages get rewritten, using `git diff` on their sources to scope the edit.
 3. **Answer questions** — the wiki is the agent's *index*, not its answer: find the page, verify against the code it cites, answer with `file:line`, and repair the page if it drifted.
 
+The skill defines two authoring registers, recorded as `depth` in `wiki.json`: **standard** (orientation: 5-15 pages under ~200 lines) and **deep** (each major subsystem becomes a section page with `children` deep-dive pages in a subdirectory, 200-400 lines each, granular API tables and code-path walkthroughs). Staleness works per child, so deep wikis still update surgically.
+
 ## Design stance
 
 - The wiki must be **checkable**: every claim traceable to a file in `## Sources`. The AST scan keeps the structure honest; the hashes keep it current.

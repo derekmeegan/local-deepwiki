@@ -59,6 +59,8 @@ export interface WikiManifest {
   description?: string;
   generator?: string;
   generatedAt?: string;
+  /** Authoring register: 'standard' (orientation, default) or 'deep' (granular sections with children). */
+  depth?: 'standard' | 'deep';
   pages: WikiPage[];
 }
 

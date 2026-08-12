@@ -13,7 +13,7 @@
         "src/cli.ts",
         "skills/local-deepwiki/SKILL.md"
       ],
-      "sourcesHash": "04bb243c4a57b3d6b8e8e53b5cbf930ee2944c54762e93acbca5ae7ec6cddb83"
+      "sourcesHash": "48f41b0f0f73e0c6e731013e9d2d826ddecb2c83d7f78e6d091009e3e9a336f9"
     },
     {
       "id": "architecture",
@@ -25,7 +25,7 @@
         "src/wiki.ts",
         "src/scan/walk.ts"
       ],
-      "sourcesHash": "c1be4efbb19f3cf75eaa7452fc5a53311aab6dbaf465c7fe4676043f3fb39b75"
+      "sourcesHash": "ca8e0200f958b283b25920a00fff03a80d0497065f38b8b141a01e092b2e5ace"
     },
     {
       "id": "scanner",
@@ -56,8 +56,8 @@
         "skills/local-deepwiki/SKILL.md",
         "src/init.ts"
       ],
-      "sourcesHash": "5a117ad8cdb49c52d589833954ab5916bcf266f478b3fb58b2bb58faa76fe262"
+      "sourcesHash": "252f258fa19bf70dcbca53290d4d79b6087a3d181f1c08c8089e2eabb792e7a3"
     }
   ],
-  "generatedAt": "2026-08-12T05:37:36.773Z"
+  "generatedAt": "2026-08-12T06:00:38.072Z"
 }
