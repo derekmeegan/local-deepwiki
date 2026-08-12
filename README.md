@@ -26,7 +26,7 @@ $ deepwiki status
 ## How it works
 
 1. **Scan.** `deepwiki scan` parses the repository with tree-sitter (WebAssembly grammars, no native compilation) and produces `analysis.json`: symbols with signatures and doc comments, public API surface per module, and an internal import graph.
-2. **Generate.** Your coding agent, following the bundled skill, reads the analysis, reads the load-bearing source files it identifies, and writes the wiki: a page tree adapted to the repository, with file-and-line references and a source manifest per page.
+2. **Generate.** Your coding agent, following the bundled skill, reads the analysis, reads the key source files it identifies, and writes the wiki: a page tree adapted to the repository, with file-and-line references and a source manifest per page.
 3. **Track.** Each page records the source files it documents and a content hash over them. `deepwiki status` compares those hashes against the working tree and reports precisely which pages have drifted, so subsequent updates touch only what changed.
 4. **Browse.** `deepwiki tui` renders the wiki in the terminal. Questions about the codebase go to your agent, which uses the wiki as an index and verifies against current code before answering.
 
