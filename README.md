@@ -6,7 +6,7 @@
 
 local-deepwiki generates and maintains a DeepWiki-style knowledge base for a repository, using the coding agent you already run (Claude Code, Cursor, and similar) as the authoring engine. It performs no LLM API calls of its own. The toolkit consists of a tree-sitter AST scanner, a content-hash staleness tracker, a terminal browser, and a skill.
 
-The wiki itself is plain markdown in a `.deepwiki/` directory — versioned, reviewable in pull requests, and readable without any server.
+The wiki itself is plain markdown in a `.deepwiki/` directory. It is versioned, reviewable in pull requests, and readable without any server.
 
 <p align="center">
   <img src="media/tui-stagehand.png" alt="deepwiki tui browsing a generated wiki for the Stagehand repository" width="820">
@@ -57,7 +57,7 @@ When it finishes:
 $ npx local-deepwiki tui
 ```
 
-After the code changes, ask the agent to *update the deepwiki* — `deepwiki status` gives it the exact list of stale pages.
+After the code changes, ask the agent to *update the deepwiki*. `deepwiki status` gives it the exact list of stale pages.
 
 ## Commands
 
@@ -92,12 +92,6 @@ Symbol extraction covers TypeScript, TSX, JavaScript, Python, Go, Rust, Java, Ru
 - **Adaptive structure.** The page tree is planned from AST evidence per repository, rather than filling in a fixed template.
 - **Verifiable output.** Every page cites the files it was derived from; every claim is checkable. Hash tracking keeps the documentation's freshness observable rather than assumed.
 - **Incremental by design.** Updates are scoped to pages whose sources actually changed.
-
-## Why not local-deepwiki?
-
-- It requires a coding agent. There is no standalone generation mode, by design.
-- Wiki quality depends on the agent following the skill; the toolkit constrains and verifies, but does not itself write prose.
-- There is no hosted web UI or built-in Q&A chat. Questions are answered by your agent, which can verify against the code — a deliberate trade-off, but a different workflow than hosted DeepWiki services.
 
 ## License
 
