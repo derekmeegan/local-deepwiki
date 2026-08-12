@@ -1,76 +1,100 @@
 # local-deepwiki
 
-**A deepwiki for your codebase that lives in your terminal, written by *your own* coding agent.** No hosted service, no LLM API keys, no web app, no chatbot bolted onto the wiki — the intelligence is the agent you already run (Claude Code, Cursor, etc.), and the wiki is plain markdown you browse with a TUI.
+[![npm](https://img.shields.io/npm/v/local-deepwiki)](https://www.npmjs.com/package/local-deepwiki)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![node](https://img.shields.io/badge/node-%E2%89%A5%2020-brightgreen)](package.json)
 
-This package gives that agent the pieces it can't do well on its own:
+local-deepwiki generates and maintains a DeepWiki-style knowledge base for a repository, using the coding agent you already run (Claude Code, Cursor, and similar) as the authoring engine. It performs no LLM API calls of its own. The toolkit consists of a tree-sitter AST scanner, a content-hash staleness tracker, a terminal browser, and an agent skill that ties them together.
 
-- **`deepwiki scan`** — real AST analysis via tree-sitter (wasm grammars, zero native builds): symbols, signatures, doc comments, and an internal import graph. Your agent plans the wiki from evidence, not vibes.
-- **`deepwiki status`** — every page records which source files it documents and a content hash. When code changes, your agent gets a precise list of exactly which pages went stale.
-- **`deepwiki tui`** — browse the wiki without leaving the terminal. Zero dependencies, vim-ish keys, stale-page markers.
-- **A skill** (`skill/SKILL.md`) — the playbook your agent follows to generate, update, and *use* the wiki when answering questions.
+The wiki itself is plain markdown in a `.deepwiki/` directory — versioned, reviewable in pull requests, and readable without any server.
 
-```
-┌─────────────┐   deepwiki scan    ┌──────────────┐
-│ coding agent│ ◄────────────────  │  your repo   │
-│  (the LLM   │    AST analysis    └──────────────┘
-│  you already│
-│    have)    │  writes .deepwiki/*.md + wiki.json
-└──────┬──────┘
-       │
-       └───────────────►  deepwiki tui   (browse it here)
-```
+<!-- screenshot: `deepwiki tui` browsing a generated wiki -->
 
-## Quick start
+```console
+$ deepwiki status
+✗ stale        enforcement                  enforcement.md
+✓ fresh        architecture                 architecture.md
+✓ fresh        ledger                       ledger.md
 
-```bash
-cd your-repo
-npx local-deepwiki init
-# → installs the skill into .claude/skills/local-deepwiki/
-# → creates .deepwiki/
-
-# then, in your coding agent:
-#   "generate the deepwiki for this repo"
-
-npx local-deepwiki tui
+1 page(s) need attention. Ask your coding agent to update them.
 ```
 
-When the code changes later, just ask your agent to *"update the deepwiki"* — `deepwiki status` tells it exactly which pages are stale, so it only rewrites what drifted.
+## How it works
 
-And when you want answers ("how does auth work here?"), you ask **the agent**, not the wiki: the skill teaches it to use the wiki as an index, verify against current code, and repair pages it finds drifted. The wiki stays a fast, honest artifact instead of an expensive chatbot.
+1. **Scan.** `deepwiki scan` parses the repository with tree-sitter (WebAssembly grammars, no native compilation) and produces `analysis.json`: symbols with signatures and doc comments, public API surface per module, and an internal import graph.
+2. **Generate.** Your coding agent, following the bundled skill, reads the analysis, reads the load-bearing source files it identifies, and writes the wiki: a page tree adapted to the repository, with file-and-line references and a source manifest per page.
+3. **Track.** Each page records the source files it documents and a content hash over them. `deepwiki status` compares those hashes against the working tree and reports precisely which pages have drifted, so subsequent updates touch only what changed.
+4. **Browse.** `deepwiki tui` renders the wiki in the terminal. Questions about the codebase go to your agent, which uses the wiki as an index and verifies against current code before answering.
+
+```
+┌──────────────┐   deepwiki scan    ┌────────────┐
+│ coding agent │ ◄───────────────── │ repository │
+│ (yours)      │    AST analysis    └────────────┘
+└──────┬───────┘
+       │ writes .deepwiki/*.md + wiki.json
+       ▼
+  deepwiki tui / deepwiki status
+```
+
+## Getting started
+
+```console
+$ cd your-repo
+$ npx local-deepwiki init
+```
+
+This installs the skill into `.claude/skills/local-deepwiki/` and creates `.deepwiki/`. Then, in your coding agent:
+
+> generate the deepwiki for this repo
+
+When it finishes:
+
+```console
+$ npx local-deepwiki tui
+```
+
+After the code changes, ask the agent to *update the deepwiki* — `deepwiki status` gives it the exact list of stale pages.
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `deepwiki scan [path]` | AST-parse the repo → `.deepwiki/analysis.json` + a summary (largest areas, public symbols, most-depended-on files) |
-| `deepwiki status [--json] [--update]` | Compare each page's recorded source hashes to the working tree (`fresh`/`stale`); `--update` re-seals after regeneration. Exit code 2 when stale — CI-friendly |
-| `deepwiki tui [path]` | Terminal browser: `j/k` move, `d/u` scroll, `g/G` top/bottom, `q` quit. Prints the page tree when piped |
-| `deepwiki tree [path]` | Print the page tree (with stale markers) |
-| `deepwiki init [path]` | Install the skill + create `.deepwiki/` |
+| Command | Description |
+| --- | --- |
+| `deepwiki scan [path]` | AST-parse the repository and write `.deepwiki/analysis.json`, printing a summary of the largest areas, public symbols, and most-depended-on files |
+| `deepwiki status [--json] [--update]` | Compare each page's recorded source hashes against the working tree. `--update` re-seals hashes after regeneration. Exits 2 when pages are stale, for use in CI |
+| `deepwiki tui [path]` | Browse the wiki in the terminal (`j`/`k` navigate, `d`/`u` scroll, `q` quit). Prints the page tree when output is piped |
+| `deepwiki tree [path]` | Print the page tree with staleness markers |
+| `deepwiki init [path]` | Install the agent skill and create `.deepwiki/` |
 
-## Supported languages (AST)
-
-TypeScript / TSX / JavaScript, Python, Go, Rust, Java, Ruby, C#, PHP, C/C++ — via [`@vscode/tree-sitter-wasm`](https://www.npmjs.com/package/@vscode/tree-sitter-wasm). Files in other languages are still tracked for staleness; they just don't contribute symbols.
-
-## The `.deepwiki/` contract
+## The `.deepwiki/` format
 
 ```
 .deepwiki/
   wiki.json        # page tree: { id, title, file, sources[], sourcesHash, children[] }
-  overview.md      # pages: plain markdown, terminal-friendly diagrams
+  overview.md      # pages: plain markdown
   architecture.md
   ...
-  analysis.json    # AST scan output (gitignored — regenerate any time)
+  analysis.json    # scanner output (gitignored; regenerated at will)
 ```
 
-Pages are meant to be **committed** — they're documentation, reviewable in PRs like everything else. Any tool that writes this format can feed the TUI; any agent that reads it can answer from it.
+`wiki.json` and the pages are intended to be committed. The format is deliberately minimal: any tool that writes it can feed the viewer, and any agent that reads it can answer from it.
 
-## Why not a "real" DeepWiki clone?
+## Supported languages
 
-Tools in this space embed an LLM pipeline — provider configs, prompt orchestration, caching, retry logic — and still can't read your code as well as the agent you already pay for. local-deepwiki deletes that entire layer. What remains is only what must be *deterministic* (parsing, hashing) or *rendered* (the TUI): a small, sharp toolkit instead of a platform.
+Symbol extraction covers TypeScript, TSX, JavaScript, Python, Go, Rust, Java, Ruby, C#, PHP, and C/C++, via [`@vscode/tree-sitter-wasm`](https://www.npmjs.com/package/@vscode/tree-sitter-wasm). Files in other languages are still tracked for staleness; they simply contribute no symbols to the analysis.
 
-This repo's own wiki lives in [`.deepwiki/`](.deepwiki/) — generated by a coding agent following the skill, naturally.
+## Why local-deepwiki?
+
+- **No API keys, no separate LLM pipeline.** Comparable tools embed provider configuration, prompt orchestration, and response caching to drive their own generation loop. Here, generation is delegated to an agent that already has code-reading tools and full repository context, so the package ships only what must be deterministic (parsing, hashing) or rendered (the TUI).
+- **Adaptive structure.** The page tree is planned from AST evidence per repository, rather than filling in a fixed template.
+- **Verifiable output.** Every page cites the files it was derived from; every claim is checkable. Hash tracking keeps the documentation's freshness observable rather than assumed.
+- **Incremental by design.** Updates are scoped to pages whose sources actually changed.
+
+## Why not local-deepwiki?
+
+- It requires a coding agent. There is no standalone generation mode, by design.
+- Wiki quality depends on the agent following the skill; the toolkit constrains and verifies, but does not itself write prose.
+- There is no hosted web UI or built-in Q&A chat. Questions are answered by your agent, which can verify against the code — a deliberate trade-off, but a different workflow than hosted DeepWiki services.
 
 ## License
 
-MIT
+[MIT](LICENSE)
