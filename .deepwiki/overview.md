@@ -39,10 +39,10 @@ npx local-deepwiki tui           # browse in the terminal
 | `src/scan/` | File walker, language configs, tree-sitter extraction — see [Scanner](scanner.md) |
 | `src/wiki.ts` | Manifest + staleness model — see [Architecture](architecture.md) |
 | `src/tui/` | The terminal browser — see [Terminal Viewer](tui.md) |
-| `skill/SKILL.md` | The agent playbook — see [The Skill](skill.md) |
+| `skills/local-deepwiki/SKILL.md` | The agent playbook — see [The Skill](skill.md) |
 
 ## Sources
 
 - `package.json`
 - `src/cli.ts`
-- `skill/SKILL.md`
+- `skills/local-deepwiki/SKILL.md`

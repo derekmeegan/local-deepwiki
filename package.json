@@ -1,6 +1,6 @@
 {
   "name": "local-deepwiki",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AST-powered deepwiki for your codebase, written by your own coding agent and browsed in your terminal. No LLM API calls \u2014 a skill, a scanner, and a TUI.",
   "type": "module",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "files": [
     "dist",
-    "skill",
+    "skills",
     "README.md"
   ],
   "engines": {

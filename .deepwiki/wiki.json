@@ -11,9 +11,9 @@
       "sources": [
         "package.json",
         "src/cli.ts",
-        "skill/SKILL.md"
+        "skills/local-deepwiki/SKILL.md"
       ],
-      "sourcesHash": "ac2e9eace66e0a7242e1b4d7767ce7933f6127b152cbfa83c8dd7010bb278718"
+      "sourcesHash": "04bb243c4a57b3d6b8e8e53b5cbf930ee2944c54762e93acbca5ae7ec6cddb83"
     },
     {
       "id": "architecture",
@@ -53,11 +53,11 @@
       "file": "skill.md",
       "summary": "The agent playbook: generate, update, answer.",
       "sources": [
-        "skill/SKILL.md",
+        "skills/local-deepwiki/SKILL.md",
         "src/init.ts"
       ],
-      "sourcesHash": "e39f70785e6dacb1dd6787e92b99275ccc3d8e9416a483ab065e332411d7c8b9"
+      "sourcesHash": "5a117ad8cdb49c52d589833954ab5916bcf266f478b3fb58b2bb58faa76fe262"
     }
   ],
-  "generatedAt": "2026-08-12T05:10:08.394Z"
+  "generatedAt": "2026-08-12T05:37:24.433Z"
 }

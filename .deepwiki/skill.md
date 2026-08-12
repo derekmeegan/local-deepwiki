@@ -1,6 +1,6 @@
 # The Skill
 
-`skill/SKILL.md` is the actual "wiki engine" — a playbook the user's coding agent loads. `deepwiki init` (`src/init.ts:17`) copies it into the target repo's `.claude/skills/local-deepwiki/SKILL.md` (Claude Code's convention; other agents can be pointed at the file directly).
+`skills/local-deepwiki/SKILL.md` is the actual "wiki engine" — a playbook the user's coding agent loads. `deepwiki init` (`src/init.ts:22`) copies it into the target repo's `.claude/skills/local-deepwiki/SKILL.md` (Claude Code's convention; other agents can be pointed at the file directly).
 
 ## What it instructs the agent to do
 
@@ -28,9 +28,9 @@ Three workflows:
 
 - The wiki must be **checkable**: every claim traceable to a file in `## Sources`. The AST scan keeps the structure honest; the hashes keep it current.
 - Pages are plain markdown written for a terminal — compact ASCII diagrams over large mermaid, no HTML, no chat UI, no keys. Rendering belongs to the TUI, intelligence belongs to the agent.
-- `.deepwiki/*.md` and `wiki.json` are committed like any other docs; `analysis.json` is disposable and gitignored (`ensureWikiDir`, `src/init.ts:26`).
+- `.deepwiki/*.md` and `wiki.json` are committed like any other docs; `analysis.json` is disposable and gitignored (`ensureWikiDir`, `src/init.ts:31`).
 
 ## Sources
 
-- `skill/SKILL.md`
+- `skills/local-deepwiki/SKILL.md`
 - `src/init.ts`
