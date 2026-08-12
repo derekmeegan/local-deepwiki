@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![node](https://img.shields.io/badge/node-%E2%89%A5%2020-brightgreen)](package.json)
 
-local-deepwiki generates and maintains a DeepWiki-style knowledge base for a repository, using the coding agent you already run (Claude Code, Cursor, and similar) as the authoring engine. It performs no LLM API calls of its own. The toolkit consists of a tree-sitter AST scanner, a content-hash staleness tracker, a terminal browser, and an agent skill that ties them together.
+local-deepwiki generates and maintains a DeepWiki-style knowledge base for a repository, using the coding agent you already run (Claude Code, Cursor, and similar) as the authoring engine. It performs no LLM API calls of its own. The toolkit consists of a tree-sitter AST scanner, a content-hash staleness tracker, a terminal browser, and a skill.
 
 The wiki itself is plain markdown in a `.deepwiki/` directory — versioned, reviewable in pull requests, and readable without any server.
 
